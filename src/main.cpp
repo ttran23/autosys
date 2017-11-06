@@ -1,7 +1,13 @@
 #include "asClassification.h"
+#include "asTopology.h"
 
 int main(int argc, char *argv[]) {
 	
+    if (argc != 3) {
+        cout << "Usage : autosys inFile outFile" << endl;
+        return EXIT_FAILURE;
+    }
+    
 	/*
 	 * BEGIN PART ONE
 	 * AS Classification
@@ -11,9 +17,12 @@ int main(int argc, char *argv[]) {
 	// Expected: t = 21722, c = 2341, e = 27447
 	int tCounter = -1, cCounter = -1, eCounter = -1, totalCounter = -1;
 
+    parseTop(argv[1]);
+    /*
 	parseFile(&tCounter, &cCounter, &eCounter, &totalCounter);
 	writeFile(tCounter, cCounter, eCounter, totalCounter);
-
+     */
+    
 	/*
 	 * END PART ONE
 	 * BEGIN PART TWO

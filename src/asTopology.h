@@ -17,10 +17,12 @@
 #include <sstream>
 #include <cctype>
 #include <iterator>
+#include "AS.h"
 
 using namespace std;
 
-void parseTop(string file);
+vector<AS> parseTop(string file);
 void writeFile(int tC, int cC, int eC, int total);
 vector<string> split(const string &s, char delim);
+void check(AS first, AS second, vector<AS> &asNodes);
 #endif /* asTopology_h */

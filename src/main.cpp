@@ -10,6 +10,8 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
     
+    vector<AS *> nodes;
+    
 	/*
 	 * BEGIN PART ONE
 	 * AS Classification
@@ -18,7 +20,9 @@ int main(int argc, char *argv[]) {
 	// Transit/Access ASes, Content ASes, Enterprise ASes, Total #ASes in file
 	// Expected: t = 21722, c = 2341, e = 27447
 	// int tCounter = -1, cCounter = -1, eCounter = -1, totalCounter = -1;
-    vector<AS> asNodes = parseTop(argv[1]);
+    if(!parseTop(argv[1], nodes)) {
+        
+    }
     /*
 	parseFile(&tCounter, &cCounter, &eCounter, &totalCounter);
 	writeFile(tCounter, cCounter, eCounter, totalCounter);

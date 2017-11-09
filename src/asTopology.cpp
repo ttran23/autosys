@@ -7,7 +7,7 @@
 
 #include "asTopology.h"
 
-vector<AS> parseTop(string file) {
+bool parseTop(string file, vector<AS *> nodes) {
     
     // Open file
     ifstream inFile;
@@ -17,25 +17,27 @@ vector<AS> parseTop(string file) {
         cout << "Unable to open file\n";
         exit(1);
     }
+    bool result = false;
     vector<string> listLine;
-    vector<AS> output;
     
     // Get each line
     string inLine;
-    AS *firstNode = NULL;
-    AS *secondNode = NULL;
+    AS *firstNode;
+    AS *secondNode;
+    
     while (getline(inFile, inLine)) {
         string::size_type index;
         if ((index = inLine.find("#")) == string::npos) {
             listLine = split(inLine, '|');
-            firstNode = new AS(listLine.at(0));
-            secondNode = new AS(listLine.at(1));
-            check(*firstNode, *secondNode, output);
+            firstNode = check(listLine.at(0), nodes);
+            secondNode = check(listLine.at(1), nodes);
+            if (!existNode(*firstNode, nodes)) { nodes.push_back(firstNode); }
+            if (!existNode(*secondNode, nodes)) { nodes.push_back(secondNode); }
             if ((index = listLine.at(2).find("0")) != string::npos) {
-                firstNode->peers.push_back(*secondNode);
-                secondNode->peers.push_back(*firstNode);
+                firstNode->peers.push_back(secondNode);
+                secondNode->peers.push_back(firstNode);
             }
-            else if ((index = listLine.at(2).find("-1")) != string::npos) { firstNode->customers.push_back(*secondNode); }
+            else if ((index = listLine.at(2).find("-1")) != string::npos) { firstNode->customers.push_back(secondNode); }
             else {
                 cout << "Something went wrong when reading the line.";
                 exit(1);
@@ -43,7 +45,7 @@ vector<AS> parseTop(string file) {
         }
     }
     inFile.close();
-    return output;
+    return result;
 }
 
 template<typename Output>
@@ -61,14 +63,35 @@ vector<string> split(const string &s, char delim) {
     return elems;
 }
 
-void check(AS first, AS second, vector<AS> &asNodes) {
-    bool foundFirst = false;
-    bool foundSecond = false;
+AS *check(string name, vector<AS *> asNodes) {
+    bool found = false;
+    AS *result;
+    int i = 0;
+    
+    for (i = 0; i < asNodes.size(); i++) {
+        if (asNodes.at(i)->getName().compare(name) == 0) {
+            found = true;
+            break;
+        }
+    }
+    if (found) {
+        result = asNodes.at(i);
+    }
+    else {
+        result = new AS(name);
+    }
+    return result;
+}
+
+bool existNode(AS node, vector<AS *> asNodes) {
+    bool result = false;
     
     for (int i = 0; i < asNodes.size(); i++) {
-        if (asNodes.at(i).getName().compare(first.getName()) == 0) { foundFirst = true; }
-        if (asNodes.at(i).getName().compare(second.getName()) == 0) { foundSecond = true; }
+        if (asNodes.at(i)->getName().compare(node.getName()) == 0) {
+            result = true;
+            break;
+        }
     }
-    if (!foundFirst) { asNodes.push_back(first); }
-    if (!foundSecond) { asNodes.push_back(second); }
+    
+    return result;
 }

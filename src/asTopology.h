@@ -21,8 +21,9 @@
 
 using namespace std;
 
-vector<AS> parseTop(string file);
+bool parseTop(string file, vector<AS *> nodes);
 void writeFile(int tC, int cC, int eC, int total);
 vector<string> split(const string &s, char delim);
-void check(AS first, AS second, vector<AS> &asNodes);
+AS *check(string name, vector<AS *> asNodes);
+bool existNode(AS node, vector<AS *> asNodes);
 #endif /* asTopology_h */

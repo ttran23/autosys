@@ -10,3 +10,7 @@
 AS::AS(string name) {
     this->name = name;
 }
+
+AS::AS() {
+    
+}

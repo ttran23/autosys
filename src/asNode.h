@@ -11,14 +11,20 @@ private:
 	std::vector<int> peers;
 	std::vector<int> customers;
 public:
+	// Constructor
 	Node();
-	Node(int val);
+
+	// Methods
+	void calculateDegree();
+
+	// Getters/Setters
+	void setId(int i);
 	int getId();
-	void setDegree(int val);
+	void setDegree(int i);
 	int getDegree();
-	void addPeer(int AS);
-	void addCustomer(int AS);
+	void addPeer(int i);
 	std::vector<int> getPeers();
+	void addCust(int i);
 	std::vector<int> getCustomers();
 };
 #endif // ASNODE_H

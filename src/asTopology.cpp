@@ -24,11 +24,13 @@ bool parseTop(string file, vector<AS *> nodes) {
     string inLine;
     AS *firstNode;
     AS *secondNode;
-    
+	int itr = 0;
     while (getline(inFile, inLine)) {
         string::size_type index;
+		itr++;
         if ((index = inLine.find("#")) == string::npos) {
             listLine = split(inLine, '|');
+			printf("itr: %d\n", itr);
             firstNode = check(listLine.at(0), nodes);
             secondNode = check(listLine.at(1), nodes);
             if (!existNode(*firstNode, nodes)) { nodes.push_back(firstNode); }
@@ -44,6 +46,7 @@ bool parseTop(string file, vector<AS *> nodes) {
             }
         }
     }
+	std::cout << "Done with itr " << itr << std::endl;
     inFile.close();
     return result;
 }
@@ -68,9 +71,10 @@ AS *check(string name, vector<AS *> asNodes) {
     AS *result;
     int i = 0;
     
-    for (i = 0; i < asNodes.size(); i++) {
+	for (i = asNodes.size() - 1; i >= 0; i--) {
         if (asNodes.at(i)->getName().compare(name) == 0) {
             found = true;
+			printf("checkLuL %d\n", i);
             break;
         }
     }
@@ -86,12 +90,20 @@ AS *check(string name, vector<AS *> asNodes) {
 bool existNode(AS node, vector<AS *> asNodes) {
     bool result = false;
     
-    for (int i = 0; i < asNodes.size(); i++) {
+	for (int i = asNodes.size() - 1; i >= 0; i--) {
         if (asNodes.at(i)->getName().compare(node.getName()) == 0) {
+			printf("existLul %d\n", i);
             result = true;
             break;
         }
     }
+	/*
+	for (int i = 0; i < asNodes.size(); i++) {
+		if (asNodes.at(i)->getName().compare(node.getName()) == 0) {
+			result = true;
+			break;
+		}
+	}*/
     
     return result;
 }

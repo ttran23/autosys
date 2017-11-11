@@ -6,8 +6,10 @@
 #include <sstream>
 #include <string>
 
-std::vector<Node> parseFile2();
-void calculateData(std::vector<int> node);
-bool checkNode(int nodeCurrent, std::vector<Node> nodeList);
-int findNode(int nodeCurrent, std::vector<Node> nodeList);
+std::vector< std::vector<int> > parsePartTwo();
+std::vector<Node> processPartTwo(std::vector< std::vector<int> > nodeUnsorted);
+bool checkSourceField(std::vector<Node> nodeList, int id);
+bool checkTargetField(std::vector<Node> nodeList, int id);
+int findNodeIndex(std::vector<Node> nodeList, int id);
+Node checkExist(std::vector<Node> source, int id);
 #endif // ASTOPOLOGY_V2_H

@@ -5,51 +5,36 @@ Node::Node() {
 	this->degree = -1;
 }
 
-Node::Node(int val) {
-	this->id = val;
-	this->degree = -1;
+void Node::calculateDegree() {
+	this->degree = peers.size() + customers.size();
+}
+
+void Node::setId(int i) {
+	this->id = i;
 }
 
 int Node::getId() {
 	return this->id;
 }
 
-void Node::setDegree(int val) {
-	this->degree = val;
+void Node::setDegree(int i) {
+	this->degree = i;
 }
 
 int Node::getDegree() {
 	return this->degree;
 }
 
-void Node::addPeer(int AS) {
-	bool found = false;
-	for (int i = 0; i < this->peers.size(); i++) {
-		if (peers.at(i) == AS) {
-			found = true;
-			break;
-		}
-	}
-	if (!found) {
-		this->peers.push_back(AS);
-	}
-}
-
-void Node::addCustomer(int AS) {
-	bool found = false;
-	for (int i = 0; i < this->customers.size(); i++) {
-		if (customers.at(i) == AS) {
-			found = true;
-			break;
-		}
-	}
-	if (!found) {
-		this->customers.push_back(AS);
-	}
+void Node::addPeer(int i) {
+	this->peers.push_back(i);
 }
 
 std::vector<int> Node::getPeers() {
 	return this->peers;
+}
+
+void Node::addCust(int i) {
+	this->customers.push_back(i);
 }
 
 std::vector<int> Node::getCustomers() {

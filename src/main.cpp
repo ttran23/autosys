@@ -4,6 +4,8 @@
 #include "AS.h"
 #include "asNode.h"
 #include "asTopology_V2.h"
+#include <chrono>
+#include <ctime>
 
 int main(int argc, char *argv[]) {
 	/*
@@ -11,9 +13,8 @@ int main(int argc, char *argv[]) {
         cout << "Usage : autosys inFile outFile" << endl;
         return EXIT_FAILURE;
     }
-    
-    vector<AS *> nodes;
     */
+
 	/*
 	 * BEGIN PART ONE
 	 * AS Classification
@@ -22,11 +23,7 @@ int main(int argc, char *argv[]) {
 	// Transit/Access ASes, Content ASes, Enterprise ASes, Total #ASes in file
 	// Expected: t = 21722, c = 2341, e = 27447
 	// int tCounter = -1, cCounter = -1, eCounter = -1, totalCounter = -1;
-    /*
-	if(!parseTop(argv[1], nodes)) {
-        
-    }
-	*/
+	
     /*
 	parseFile(&tCounter, &cCounter, &eCounter, &totalCounter);
 	writeFile(tCounter, cCounter, eCounter, totalCounter);
@@ -37,11 +34,27 @@ int main(int argc, char *argv[]) {
 	 * BEGIN PART TWO
 	 * Topology Interference Through AS Links
 	 */
-	std::vector<Node> nodes;
-	nodes = parseFile2();
+	std::cout << "Begin Part Two:\n";
+	/*
+	vector<AS *> nodes;
+	if(!parseTop(argv[1], nodes)) {
+      
+	}
+	*/
 
+	std::vector< std::vector<int> > nodeUnsorted;
+	std::vector<Node> nodeSorted;
+	std::cout << "Getting all node entries from file.\n";
 
+	auto start = std::chrono::system_clock::now();
+	nodeUnsorted = parsePartTwo();
+	auto end = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end - start;
 
+	std::cout << "File parsing completed in " << elapsed_seconds.count() << " seconds.\nProcessing data now.\n";
+	std::cout << nodeUnsorted.at(300).at(0) << std::endl << nodeUnsorted.at(300).at(1) << std::endl << nodeUnsorted.at(300).at(2) << std::endl;
+	printf("total unsorted nodes %d\n", nodeUnsorted.size());
+	nodeSorted = processPartTwo(nodeUnsorted);
 	/*
 	 * END PART TWO
 	 * BEGIN PART THREE

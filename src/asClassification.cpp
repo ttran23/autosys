@@ -1,6 +1,6 @@
 #include "asClassification.h"
 
-void parseFile(int *tC, int *cC, int *eC, int *total) {
+void parsePartOne(int *tC, int *cC, int *eC, int *total) {
 
 	int tCount = 0, cCount = 0, eCount = 0;
 	
@@ -29,7 +29,7 @@ void parseFile(int *tC, int *cC, int *eC, int *total) {
 	inFile.close();
 }
 
-void writeFile(int tC, int cC, int eC, int total) {
+void writePartOne(int tC, int cC, int eC, int total) {
 
 	// Open file
 	std::ofstream outFile;

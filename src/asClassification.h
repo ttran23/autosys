@@ -13,7 +13,7 @@ All the required includes
 Functions used
 */
 
-void parseFile(int *tC, int *cC, int *eC, int *total);
-void writeFile(int tC, int cC, int eC, int total);
+void parsePartOne(int *tC, int *cC, int *eC, int *total);
+void writePartOne(int tC, int cC, int eC, int total);
 
 #endif //AS_CLASSIFICATION_H

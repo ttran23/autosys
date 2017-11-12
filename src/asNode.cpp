@@ -7,6 +7,7 @@ Node::Node() {
 
 Node::Node(int id) {
 	this->id = id;
+	this->degree = -1;
 }
 
 void Node::calculateDegree() {

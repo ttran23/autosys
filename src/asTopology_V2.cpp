@@ -10,7 +10,7 @@ std::vector< std::vector<int> > parsePartTwo() {
 
 	// Open file
 	std::ifstream inFile;
-	inFile.open("dataset_text_files/20170901.as-rel2.txt");
+	inFile.open("dataset_text_files/20170901.as-rel2small.txt");
 
 	// Check that file exists
 	if (!inFile) {
@@ -73,6 +73,11 @@ std::map<int, Node *> processPartTwo(std::vector< std::vector<int> > nodeUnsorte
 			entryOne->addCust(nodeUnsorted.at(i).at(1));
 		}
 	}
+
+	for (std::map<int, Node *>::iterator it = returnNodeVec.begin(); it != returnNodeVec.end(); ++it){
+		it->second->calculateDegree();
+	}
+
 	return returnNodeVec;
 }
 

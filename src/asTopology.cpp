@@ -107,9 +107,9 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) 
 	for (auto it = p2c->begin(); it != p2c->end(); it = p2c->upper_bound(it->first)) {
 		degreeMap.insert(std::make_pair(it->first, p2c->count(it->first)));
 		tCount++; // At least one customer, increment transit
-		if (p2p->count(it->first) + p2c->count(it->first) <= 2 
-			&& p2p->count(it->first) == 0
-			&& p2c->count(it->first) == 0) {
+		if (p2p->count(it->second) + p2c->count(it->second) <= 2
+			&& p2p->count(it->second) == 0
+			&& p2c->count(it->second) == 0) {
 			eCount++;	// Deg <= 2 with no peer and no customer
 			// Only cycling through here because no need to traverse the p2p link
 			// since any p2p link is disqualified.

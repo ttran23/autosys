@@ -4,7 +4,7 @@
 #include <chrono>
 #include <ctime>
 
-void parseIPPrefix(std::multimap<int, std::string>* ip) {
+void parseIPPrefix(std::multimap<double, std::string>* ip) {
     std::ifstream inFile;
 	inFile.open("dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
     //inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
@@ -16,19 +16,45 @@ void parseIPPrefix(std::multimap<int, std::string>* ip) {
     
     std::string inLine;
     std::string prefix, length, ASnum, prefixTemp;
-    int AS;
+    std::vector<std::string> nodeList;
+    double AS;
     while (std::getline(inFile, inLine)) {
         std::stringstream iss;
         iss << inLine;
-        iss >> prefix >> length >> AS;
-        //AS = std::stoi(ASnum);
+        iss >> prefix >> length >> ASnum;
         prefixTemp.append(prefix + "/" + length);
-        ip->insert(std::make_pair(AS, prefixTemp));
+        std::string::size_type index;
+        if ((index = ASnum.find('_')) != std::string::npos) {
+            nodeList = split(ASnum, '_');
+            for (int i = 0; i < nodeList.size(); i++) {
+                ip->insert(std::make_pair(std::stod(nodeList.at(i)), prefixTemp));
+            }
+        }
+        else {
+            AS = std::stod(ASnum);
+            ip->insert(std::make_pair(AS, prefixTemp));
+        }
         prefixTemp.clear();
     }
     
     inFile.close();
 }
+
+template<typename Output>
+void split(const std::string &s, char delim, Output result) {
+    std::stringstream ss(s);
+    std::string item;
+    while (getline(ss, item, delim)) {
+        *(result++) = item;
+    }
+}
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, back_inserter(elems));
+    return elems;
+}
+
 
 void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
 

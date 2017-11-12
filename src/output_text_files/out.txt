@@ -1,0 +1,7 @@
+There were a total of 51504 entries. Of which, the class distribution are as follows:
+Transit/Access = 21721	with a percentage of 42.1734
+Enterprise = 27443		with a percentage of 53.2832
+Content = 2340			with a percentage of 4.54334
+
+
+

@@ -46,9 +46,10 @@ int main(int argc, char *argv[]) {
 	std::vector< std::vector<int> > nodeUnsorted;
 	map<int, Node *> nodeSorted;
 	std::cout << "Getting all node entries from file.\n";
-
+    multimap<int, int>* p2p = new multimap<int, int>();
+    multimap<int, int>* p2c = new multimap<int, int>();
 	auto start = std::chrono::system_clock::now();
-	nodeUnsorted = parsePartTwo();
+	parsePartTwo(p2p, p2c);
 	auto end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;
 

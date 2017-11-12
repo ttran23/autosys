@@ -5,9 +5,10 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <map>
 
 std::vector< std::vector<int> > parsePartTwo();
-std::vector<Node> processPartTwo(std::vector< std::vector<int> > nodeUnsorted);
+std::map<int, Node *> processPartTwo(std::vector< std::vector<int> > nodeUnsorted);
 bool checkSourceField(std::vector<Node> nodeList, int id);
 bool checkTargetField(std::vector<Node> nodeList, int id);
 int findNodeIndex(std::vector<Node> nodeList, int id);

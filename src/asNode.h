@@ -13,7 +13,7 @@ private:
 public:
 	// Constructor
 	Node();
-
+	Node(int id);
 	// Methods
 	void calculateDegree();
 

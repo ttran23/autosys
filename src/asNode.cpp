@@ -5,6 +5,10 @@ Node::Node() {
 	this->degree = -1;
 }
 
+Node::Node(int id) {
+	this->id = id;
+}
+
 void Node::calculateDegree() {
 	this->degree = peers.size() + customers.size();
 }

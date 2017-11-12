@@ -1,5 +1,9 @@
 #include "asTopology_V2.h"
 
+//Temporary, debug time
+#include <chrono>
+#include <ctime>
+
 std::vector< std::vector<int> > parsePartTwo() {
 	// Temp Node vector
 	std::vector< std::vector<int> > returnNodeVec;
@@ -36,41 +40,37 @@ std::vector< std::vector<int> > parsePartTwo() {
 	return returnNodeVec;
 }
 
-std::vector<Node> processPartTwo(std::vector< std::vector<int> > nodeUnsorted) {
+std::map<int, Node *> processPartTwo(std::vector< std::vector<int> > nodeUnsorted) {
 	// Temp Node vector
-	std::vector<Node> returnNodeVec;
+	std::map<int, Node *> returnNodeVec;
 	Node temp;
 	int index = 0;
+	// TEMPORARY
+	auto start = std::chrono::system_clock::now();
+	auto end = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_seconds;
+	int j = 0;
+
 	for (unsigned int i = 0; i < nodeUnsorted.size(); i++) {
-		
-		// Process source node
-		if (!checkSourceField(returnNodeVec, nodeUnsorted.at(i).at(0))) {
-			temp.setId(nodeUnsorted.at(i).at(0));
-			temp.getPeers().clear();
-			temp.getCustomers().clear();
-			returnNodeVec.push_back(temp);
+		Node* entryOne = returnNodeVec[nodeUnsorted.at(i).at(0)];
+		Node* entryTwo = returnNodeVec[nodeUnsorted.at(i).at(1)];
+		if (entryOne == NULL) {
+			Node *newNode = new Node(nodeUnsorted.at(i).at(0)); // Makes new node w/ id of source
+			returnNodeVec[nodeUnsorted.at(i).at(0)] = newNode;	// I realize that id is redudant now that we
+			entryOne = returnNodeVec[nodeUnsorted.at(i).at(0)]; // are using maps but I don't feel like changing it
 		}
-		index = findNodeIndex(returnNodeVec, nodeUnsorted.at(i).at(0));
+		if (entryTwo == NULL) {
+			Node *newNode = new Node(nodeUnsorted.at(i).at(1)); // Makes new node w/ id of target
+			returnNodeVec[nodeUnsorted.at(i).at(1)] = newNode;  // I realize that id is redudant now that we
+			entryTwo = returnNodeVec[nodeUnsorted.at(i).at(1)]; // are using maps but I don't feel like changing it
+		}
 
 		if (nodeUnsorted.at(i).at(2) == 0) { // p2p
-			returnNodeVec.at(index).addPeer(nodeUnsorted.at(i).at(1));
+			entryOne->addPeer(nodeUnsorted.at(i).at(1));
+			entryTwo->addPeer(nodeUnsorted.at(i).at(0));
 		}
 		else if (nodeUnsorted.at(i).at(2) == -1) { // p2c
-			returnNodeVec.at(index).addCust(nodeUnsorted.at(i).at(1));
-		}
-		
-
-		// Process target node
-		if (!checkTargetField(returnNodeVec, nodeUnsorted.at(i).at(1))) {
-			temp.setId(nodeUnsorted.at(i).at(1));
-			temp.getPeers().clear();
-			temp.getCustomers().clear();
-			returnNodeVec.push_back(temp);
-		}
-		index = findNodeIndex(returnNodeVec, nodeUnsorted.at(i).at(1));
-
-		if (nodeUnsorted.at(i).at(2) == 0) { // p2p
-			returnNodeVec.at(index).addPeer(nodeUnsorted.at(i).at(0));
+			entryOne->addCust(nodeUnsorted.at(i).at(1));
 		}
 	}
 	return returnNodeVec;

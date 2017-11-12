@@ -4,6 +4,7 @@
 #include "AS.h"
 #include "asNode.h"
 #include "asTopology_V2.h"
+#include <map>
 #include <chrono>
 #include <ctime>
 
@@ -43,7 +44,7 @@ int main(int argc, char *argv[]) {
 	*/
 
 	std::vector< std::vector<int> > nodeUnsorted;
-	std::vector<Node> nodeSorted;
+	map<int, Node *> nodeSorted;
 	std::cout << "Getting all node entries from file.\n";
 
 	auto start = std::chrono::system_clock::now();
@@ -52,9 +53,17 @@ int main(int argc, char *argv[]) {
 	std::chrono::duration<double> elapsed_seconds = end - start;
 
 	std::cout << "File parsing completed in " << elapsed_seconds.count() << " seconds.\nProcessing data now.\n";
-	std::cout << nodeUnsorted.at(300).at(0) << std::endl << nodeUnsorted.at(300).at(1) << std::endl << nodeUnsorted.at(300).at(2) << std::endl;
-	printf("total unsorted nodes %d\n", nodeUnsorted.size());
+	//std::cout << nodeUnsorted.at(300).at(0) << std::endl << nodeUnsorted.at(300).at(1) << std::endl << nodeUnsorted.at(300).at(2) << std::endl;
+	printf("Total unsorted nodes %d\n\n", nodeUnsorted.size());
+	
+
+	std::cout << "\n Start ProcessPartTwo\n";
+	start = std::chrono::system_clock::now();
 	nodeSorted = processPartTwo(nodeUnsorted);
+	end = std::chrono::system_clock::now();
+	elapsed_seconds = end - start;
+	std::cout << "\nDone with ProcessPartTwo in " << elapsed_seconds.count() << " seconds\n";
+	std::cout << "Map size is: " << nodeSorted.size() << std::endl;
 	/*
 	 * END PART TWO
 	 * BEGIN PART THREE

@@ -73,64 +73,93 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) 
 	// Iterate through p2p and p2c
 	for (auto it = p2p->begin(); it != p2p->end(); it = p2p->upper_bound(it->first)) {
 		degreeMap.insert(std::make_pair(it->first, p2p->count(it->first) + p2c->count(it->first)));
-		
 		if (p2p->count(it->first) >= 1 && p2c->count(it->first) == 0) {
 			cCount++;	// At least one peer and no customer
-		}
-		
-		if (p2p->count(it->first) + p2c->count(it->first) <= 2 && p2c->count(it->first) == 0) {
-			eCount++;	// Your idea: Deg <= 2 and Peer only
-		}
-		else if (p2p->count(it->first) + p2c->count(it->first) <= 2 && p2p->count(it->first) == 0) {
-			eCount++;	// Your idea: Deg <= 2 and Cust only
 		}
 	}
 
 	for (auto it = p2c->begin(); it != p2c->end(); it = p2c->upper_bound(it->first)) {
 		degreeMap.insert(std::make_pair(it->first, p2c->count(it->first)));
 		tCount++; // At least one customer, increment transit
-		if (p2p->count(it->first) + p2c->count(it->first) <= 2 && p2c->count(it->first) == 0) {
-			eCount++;	// Your idea: Deg <= 2 and Peer only
-		}
-		else if (p2p->count(it->first) + p2c->count(it->first) <= 2 && p2p->count(it->first) == 0) {
-			eCount++;	// Your idea: Deg <= 2 and Cust only
+		if (p2p->count(it->first) + p2c->count(it->first) <= 2 
+			&& p2p->count(it->first) == 0
+			&& p2c->count(it->first) == 0) {
+			eCount++;	// Deg <= 2 with no peer and no customer
+			// Only cycling through here because no need to traverse the p2p link
+			// since any p2p link is disqualified.
 		}
 	}
 
 	// Setting into bins for Graph 2
-	int bin_trash = 0, bin_1 = 0, bin_2_5 = 0, bin_5_100 = 0, bin_100_200 = 0, bin_200_1000 = 0, bin_1000_inf = 0;
-
+	int bin[7] = { 0, 0, 0, 0, 0, 0, 0 };
+	
 	for (auto it = degreeMap.begin(); it != degreeMap.end(); it++) {
 		if (it->second > 1000) {	
-			bin_1000_inf++;	
+			bin[6]++;	// Bin > 1000
 		}
 		else if (it->second > 200) {
-			bin_200_1000++;
+			bin[5]++;	// 1000 => Bin > 200
 		}
 		else if (it->second > 100) {
-			bin_100_200++;
+			bin[4]++;	// 200 => Bin > 100
 		}
 		else if (it->second > 5) {
-			bin_5_100++;
+			bin[3]++;	// 100 => Bin > 5
 		}
 		else if (it->second > 1) {
-			bin_2_5++;
+			bin[2]++;	// 5 => Bin > 1
 		}
 		else if (it->second == 1) {
-			bin_1++;
+			bin[1]++;	// Bin == 1
 		}
 		else {
-			bin_trash++;
+			bin[0]++;	// Trash Bin
 		}
 	}
 
-	// TODO: Write to File Instead of Console
-	std::cout << "Bin trash: " << bin_trash << std::endl;
-	std::cout << "Bin 1: "	<< bin_1 << std::endl;
-	std::cout << "Bin 2-5: " << bin_2_5 << std::endl;
-	std::cout << "Bin 5-100: " << bin_5_100 << std::endl;
-	std::cout << "Bin 100-200: " << bin_100_200 << std::endl;
-	std::cout << "Bin 200-1000: " << bin_200_1000 << std::endl;
-	std::cout << "Bin 1000+: " << bin_1000_inf << std::endl;
+	writePartTwo(bin, tCount, cCount, eCount);
+}
+
+void writePartTwo(int *bin, int tC, int cC, int eC) {
+
+	// Open file
+	std::ofstream outFile;
+	outFile.open("output_text_files/partTwo.txt");
+
+	// Check that file exists
+	if (!outFile) {
+		std::cout << "Unable to open file\n";
+		exit(1);
+	}
+
+	// Variables and output of Graph 2
+	int totalBin = bin[0] + bin[1] + bin[2] + bin[3] + bin[4] + bin[5] + bin[6];
+
+	outFile << "\nGraph 2: There were a total of " << totalBin << "entries.\n";
+	outFile << "Bin < 1: " << bin[0] << std::endl;
+	outFile << "Bin 1: " << bin[1] << std::endl;
+	outFile << "Bin 2-5: " << bin[2] << std::endl;
+	outFile << "Bin 5-100: " << bin[3] << std::endl;
+	outFile << "Bin 100-200: " << bin[4] << std::endl;
+	outFile << "Bin 200-1000: " << bin[5] << std::endl;
+	outFile << "Bin 1000+: " << bin[6] << std::endl;
+
+	// Variables and output of Graph 3
+	// TODO
+	outFile << "\nGraph 3: \n\n";
+
+	// Variables and output of Graph 4
+	double totalCount = tC + cC + eC;
+	double tPercent = (double)tC / totalCount * 100.0;
+	double ePercent = (double)eC / totalCount * 100.0;
+	double cPercent = (double)cC / totalCount * 100.0;
+
+	outFile << "\nGraph 4: There were a total of " << totalCount << "entries. Of which, the class distribution are as follows:\n";
+	outFile << "Transit/Access = " << tC << "\twith a percentage of " << tPercent << std::endl;
+	outFile << "Enterprise = " << eC << "\t\twith a percentage of " << ePercent << std::endl;
+	outFile << "Content = " << cC << "\t\t\twith a percentage of " << cPercent << std::endl;
+	outFile << "\n\n\n";
+
+	outFile.close();
 
 }

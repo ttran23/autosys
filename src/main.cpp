@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Getting all node entries from file.\n";
 	auto start = std::chrono::system_clock::now();
-    parseIPPrefix(ipList);
+    //parseIPPrefix(ipList);
 	parsePartTwo(p2p, p2c);
 	auto end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;

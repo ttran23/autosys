@@ -4,9 +4,10 @@
 #include <chrono>
 #include <ctime>
 
-void parseIPPrefix(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, std::multimap<int, int>* ip) {
+void parseIPPrefix(std::multimap<int, std::string>* ip) {
     std::ifstream inFile;
-    inFile.open("dataset_text_files/20170901.as-rel2small.txt");
+    // inFile.open("dataset_text_files/20170901.as-rel2small.txt");
+    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
     
     if (!inFile) {
         std::cout << "Unable to open file\n";
@@ -14,15 +15,19 @@ void parseIPPrefix(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, s
     }
     
     std::string inLine;
-    std::string prefix, length, AS;
+    std::string prefix, length, ASnum, prefixTemp;
+    int AS;
     while (std::getline(inFile, inLine)) {
         std::stringstream iss;
-        std::vector<std::string> temp;
         iss << inLine;
         iss >> prefix >> length >> AS;
+        //AS = std::stoi(ASnum);
+        prefixTemp.append(prefix + "/" + length);
+        ip->insert(std::make_pair(AS, prefixTemp));
+        prefixTemp.clear();
     }
     
-    
+    inFile.close();
 }
 
 void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
@@ -31,7 +36,8 @@ void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
 
 	// Open file
 	std::ifstream inFile;
-	inFile.open("dataset_text_files/20170901.as-rel2small.txt");
+	// inFile.open("dataset_text_files/20170901.as-rel2small.txt");
+    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/20170901.as-rel2.txt");
 
 	// Check that file exists
 	if (!inFile) {
@@ -127,62 +133,3 @@ int findNodeIndex(std::vector<Node> nodeList, int id) {
 		}
 	}
 }
-
-/*
-
-
-	int state = 0, indexA, indexB;
-	checkNode(firstNode, nodes) ? state = state : state += 2;
-	checkNode(secondNode, nodes) ? state = state : state += 1;
-	Node nodeA(firstNode);
-	Node nodeB(secondNode);
-	switch (state) {
-	case 0: // firstNode in list, secondNode in list
-		indexA = findNode(firstNode, nodes);
-		indexB = findNode(secondNode, nodes);
-		if (type == 0) { // Peer to Peer
-			nodes.at(indexA).addPeer(secondNode);
-			nodes.at(indexB).addPeer(firstNode);
-		}
-		else if (type == -1) { // Provider to Customer
-			nodes.at(indexA).addCustomer(secondNode);
-		}
-		break;
-	case 1: // firstNode in list, secondNode NOT in list
-		indexA = findNode(firstNode, nodes);
-		if (type == 0) { // Peer to Peer
-			nodes.at(indexA).addPeer(secondNode);
-			nodeB.addPeer(firstNode);
-			nodes.push_back(nodeB);
-		}
-		else if (type == -1) { // Provider to Customer
-			nodes.at(indexA).addCustomer(secondNode);
-		}
-		break;
-	case 2: // firstNode NOT in list, secondNode in list
-		indexB = findNode(secondNode, nodes);
-		if (type == 0) { // Peer to Peer
-			nodeA.addPeer(secondNode);
-			nodes.push_back(nodeA);
-			nodes.at(indexB).addPeer(firstNode);
-		}
-		else if (type == -1) { // Provider to Customer
-			nodeA.addCustomer(secondNode);
-			nodes.push_back(nodeA);
-		}
-		break;
-	case 3: // firstNode NOT in list, secondNode NOT in list
-		if (type == 0) { // Peer to Peer
-			nodeA.addPeer(secondNode);
-			nodeB.addPeer(firstNode);
-			nodes.push_back(nodeA);
-			nodes.push_back(nodeB);
-		}
-		else if (type == -1) { // Provider to Customer
-			nodeA.addCustomer(secondNode);
-			nodes.push_back(nodeA);
-		}
-		break;
-	}
-
-*/

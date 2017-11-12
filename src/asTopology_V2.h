@@ -8,7 +8,7 @@
 #include <map>
 
 void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c);
-void parseIPPrefix(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, std::multimap<int, int>* ip);
+void parseIPPrefix(std::multimap<int, std::string>* ip);
 std::map<int, Node *> processPartTwo(std::vector< std::vector<int> > nodeUnsorted);
 bool checkSourceField(std::vector<Node> nodeList, int id);
 bool checkTargetField(std::vector<Node> nodeList, int id);

@@ -66,19 +66,38 @@ void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
 }
 
 void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
-	// Degree Map
+	// Degree Map, AS Classifications
 	std::multimap<int, int> degreeMap;
+	int eCount = 0, cCount = 0, tCount = 0;
 	
 	// Iterate through p2p and p2c
 	for (auto it = p2p->begin(); it != p2p->end(); it = p2p->upper_bound(it->first)) {
 		degreeMap.insert(std::make_pair(it->first, p2p->count(it->first) + p2c->count(it->first)));
+		
+		if (p2p->count(it->first) >= 1 && p2c->count(it->first) == 0) {
+			cCount++;	// At least one peer and no customer
+		}
+		
+		if (p2p->count(it->first) + p2c->count(it->first) <= 2 && p2c->count(it->first) == 0) {
+			eCount++;	// Your idea: Deg <= 2 and Peer only
+		}
+		else if (p2p->count(it->first) + p2c->count(it->first) <= 2 && p2p->count(it->first) == 0) {
+			eCount++;	// Your idea: Deg <= 2 and Cust only
+		}
 	}
 
 	for (auto it = p2c->begin(); it != p2c->end(); it = p2c->upper_bound(it->first)) {
 		degreeMap.insert(std::make_pair(it->first, p2c->count(it->first)));
+		tCount++; // At least one customer, increment transit
+		if (p2p->count(it->first) + p2c->count(it->first) <= 2 && p2c->count(it->first) == 0) {
+			eCount++;	// Your idea: Deg <= 2 and Peer only
+		}
+		else if (p2p->count(it->first) + p2c->count(it->first) <= 2 && p2p->count(it->first) == 0) {
+			eCount++;	// Your idea: Deg <= 2 and Cust only
+		}
 	}
 
-	// Setting into bins
+	// Setting into bins for Graph 2
 	int bin_trash = 0, bin_1 = 0, bin_2_5 = 0, bin_5_100 = 0, bin_100_200 = 0, bin_200_1000 = 0, bin_1000_inf = 0;
 
 	for (auto it = degreeMap.begin(); it != degreeMap.end(); it++) {
@@ -113,4 +132,5 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) 
 	std::cout << "Bin 100-200: " << bin_100_200 << std::endl;
 	std::cout << "Bin 200-1000: " << bin_200_1000 << std::endl;
 	std::cout << "Bin 1000+: " << bin_1000_inf << std::endl;
+
 }

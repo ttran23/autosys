@@ -99,6 +99,7 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) 
 	// Iterate through p2p and p2c
 	for (auto it = p2p->begin(); it != p2p->end(); it = p2p->upper_bound(it->first)) {
 		degreeMap.insert(std::make_pair(it->first, p2p->count(it->first) + p2c->count(it->first)));
+		degreeMap.insert(std::make_pair(it->second, p2p->count(it->second) + p2c->count(it->second)));
 		if (p2p->count(it->first) >= 1 && p2c->count(it->first) == 0) {
 			cCount++;	// At least one peer and no customer
 		}
@@ -106,6 +107,7 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) 
 
 	for (auto it = p2c->begin(); it != p2c->end(); it = p2c->upper_bound(it->first)) {
 		degreeMap.insert(std::make_pair(it->first, p2c->count(it->first)));
+		degreeMap.insert(std::make_pair(it->second, p2c->count(it->second)));
 		tCount++; // At least one customer, increment transit
 		if (p2p->count(it->second) + p2c->count(it->second) <= 2
 			&& p2p->count(it->second) == 0

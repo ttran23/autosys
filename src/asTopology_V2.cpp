@@ -4,13 +4,35 @@
 #include <chrono>
 #include <ctime>
 
-std::vector< std::vector<int> > parsePartTwo() {
+void parseIPPrefix(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, std::multimap<int, int>* ip) {
+    std::ifstream inFile;
+    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/routeviews-rv6-20171110-1200.pfx2as.txt");
+    
+    if (!inFile) {
+        std::cout << "Unable to open file\n";
+        exit(1);
+    }
+    
+    std::string inLine;
+    std::string prefix, length, AS;
+    while (std::getline(inFile, inLine)) {
+        std::stringstream iss;
+        std::vector<std::string> temp;
+        iss << inLine;
+        iss >> prefix >> length >> AS;
+    }
+    
+    
+}
+
+void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
 	// Temp Node vector
-	std::vector< std::vector<int> > returnNodeVec;
+	// std::vector< std::vector<int> > returnNodeVec;
 
 	// Open file
 	std::ifstream inFile;
-	inFile.open("dataset_text_files/20170901.as-rel2.txt");
+	// inFile.open("dataset_text_files/20170901.as-rel2.txt");
+    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/20170901.as-rel2.txt");
 
 	// Check that file exists
 	if (!inFile) {
@@ -26,18 +48,18 @@ std::vector< std::vector<int> > parsePartTwo() {
 		if (inLine.at(0) == '#')
 			continue;
 		std::stringstream iss;
-		std::vector<int> temp;
 		iss << inLine;
 		iss >> x1 >> pipeThrow >> x2 >> pipeThrow >> t;
-		temp.push_back(x1);
-		temp.push_back(x2);
-		temp.push_back(t);
-		returnNodeVec.push_back(temp);
+        if ( t == 0 ) { p2p->insert(std::make_pair(x1, x2)); }
+        else if ( t == -1 ) { p2c->insert(std::make_pair(x1, x2)); }
+        else {
+            std::cout << "Something went wrong creating maps!" << std::endl;
+            exit(-1);
+        }
 	}
 
 	// Close file and return unsorted node list
 	inFile.close();
-	return returnNodeVec;
 }
 
 std::map<int, Node *> processPartTwo(std::vector< std::vector<int> > nodeUnsorted) {

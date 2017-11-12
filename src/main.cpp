@@ -36,35 +36,22 @@ int main(int argc, char *argv[]) {
 	 * Topology Interference Through AS Links
 	 */
 	std::cout << "Begin Part Two:\n";
-	/*
-	vector<AS *> nodes;
-	if(!parseTop(argv[1], nodes)) {
-      
-	}
-	*/
-
-	std::vector< std::vector<int> > nodeUnsorted;
-	map<int, Node *> nodeSorted;
+	multimap<int, int>* p2p = new multimap<int, int>();
+	multimap<int, int>* p2c = new multimap<int, int>();
 	std::cout << "Getting all node entries from file.\n";
-    multimap<int, int>* p2p = new multimap<int, int>();
-    multimap<int, int>* p2c = new multimap<int, int>();
 	auto start = std::chrono::system_clock::now();
 	parsePartTwo(p2p, p2c);
 	auto end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;
-
-	std::cout << "File parsing completed in " << elapsed_seconds.count() << " seconds.\nProcessing data now.\n";
-	//std::cout << nodeUnsorted.at(300).at(0) << std::endl << nodeUnsorted.at(300).at(1) << std::endl << nodeUnsorted.at(300).at(2) << std::endl;
-	printf("Total unsorted nodes %d\n\n", nodeUnsorted.size());
+	std::cout << "File parsing completed in " << elapsed_seconds.count() << " seconds.\n";
 	
-
-	std::cout << "\n Start ProcessPartTwo\n";
-	start = std::chrono::system_clock::now();
-	nodeSorted = processPartTwo(nodeUnsorted);
+	std::cout << "\n Start processing data and get degrees\n";
+	start = std::chrono::system_clock::now();	
+	processPartTwo(p2p, p2c);
 	end = std::chrono::system_clock::now();
 	elapsed_seconds = end - start;
-	std::cout << "\nDone with ProcessPartTwo in " << elapsed_seconds.count() << " seconds\n";
-	std::cout << "Map size is: " << nodeSorted.size() << std::endl;
+	std::cout << "\nDone with processing in " << elapsed_seconds.count() << " seconds\n";
+	
 	/*
 	 * END PART TWO
 	 * BEGIN PART THREE

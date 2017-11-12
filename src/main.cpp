@@ -39,19 +39,22 @@ int main(int argc, char *argv[]) {
 	std::cout << "Begin Part Two:\n";
 	std::multimap<int, int>* p2p = new std::multimap<int, int>();
 	std::multimap<int, int>* p2c = new std::multimap<int, int>();
-	std::multimap<double, std::string>* ipList = new std::multimap<double, std::string>();
+    std::multimap<std::string, double>* ipList = new std::multimap<std::string, double>();
+    std::multimap<std::string, int>* ipHisto = new std::multimap<std::string, int>();
 
 	std::cout << "Getting all node entries from file.\n";
 	auto start = std::chrono::system_clock::now();
     parseIPPrefix(ipList);
-	parsePartTwo(p2p, p2c);
+	// parsePartTwo(p2p, p2c);
 	auto end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;
 	std::cout << "File parsing completed in " << elapsed_seconds.count() << " seconds.\n";
 	
 	std::cout << "\n Start processing data and get degrees\n";
-	start = std::chrono::system_clock::now();	
-	processPartTwo(p2p, p2c);
+	start = std::chrono::system_clock::now();
+    int ipBin[5] = { 0, 0, 0, 0, 0 };
+    ipHistogram(ipList, ipBin);
+	// processPartTwo(p2p, p2c);
 	end = std::chrono::system_clock::now();
 	elapsed_seconds = end - start;
 	std::cout << "\nDone with processing in " << elapsed_seconds.count() << " seconds\n";

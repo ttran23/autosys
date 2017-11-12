@@ -1,29 +1,14 @@
-//
-//  asTopology.h
-//  autosys
-//
-//  Created by Jason Tran on 11/5/17.
-//
+#ifndef ASTOPOLOGY_H
+#define ASTOPOLOGY_H
 
-#ifndef asTopology_h
-#define asTopology_h
-
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
-#include <cstring>
-#include <vector>
 #include <fstream>
 #include <sstream>
-#include <cctype>
-#include <iterator>
-#include "AS.h"
+#include <vector>
+#include <string>
+#include <map>
 
-using namespace std;
-
-bool parseTop(string file, vector<AS *> nodes);
-void writeFile(int tC, int cC, int eC, int total);
-vector<string> split(const string &s, char delim);
-AS *check(string name, vector<AS *> asNodes);
-bool existNode(AS node, vector<AS *> asNodes);
-#endif /* asTopology_h */
+void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c);
+void parseIPPrefix(std::multimap<int, std::string>* ip);
+void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c);
+#endif // ASTOPOLOGY_H

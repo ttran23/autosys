@@ -1,45 +1,49 @@
 #include "asClassification.h"
 #include "asTopology.h"
-#include "asClassification.h"
-#include "AS.h"
-#include "asNode.h"
-#include "asTopology_V2.h"
 #include <map>
 #include <chrono>
 #include <ctime>
 
 int main(int argc, char *argv[]) {
+	
 	/*
+	// Command line stuff
     if (argc != 3) {
         cout << "Usage : autosys inFile outFile" << endl;
         return EXIT_FAILURE;
     }
-    */
+	*/
 
 	/*
 	 * BEGIN PART ONE
 	 * AS Classification
 	 */
 
+	/*
+	std::cout << "Begin Part One:\n";
 	// Transit/Access ASes, Content ASes, Enterprise ASes, Total #ASes in file
-	// Expected: t = 21722, c = 2341, e = 27447
-	// int tCounter = -1, cCounter = -1, eCounter = -1, totalCounter = -1;
-	
-    /*
-	parseFile(&tCounter, &cCounter, &eCounter, &totalCounter);
-	writeFile(tCounter, cCounter, eCounter, totalCounter);
-     */
+	int tCounter = -1, cCounter = -1, eCounter = -1, totalCounter = -1;
+
+	// Expected: t = 21722, c = 2341, e = 27447, total = sum
+	parsePartOne(&tCounter, &cCounter, &eCounter, &totalCounter);
+	writePartOne(tCounter, cCounter, eCounter, totalCounter);
+	std::cout << "Part One Completed\n";
+    */
     
 	/*
 	 * END PART ONE
 	 * BEGIN PART TWO
 	 * Topology Interference Through AS Links
 	 */
+
 	std::cout << "Begin Part Two:\n";
-	multimap<int, int>* p2p = new multimap<int, int>();
-	multimap<int, int>* p2c = new multimap<int, int>();
+	std::multimap<int, int>* p2p = new std::multimap<int, int>();
+	std::multimap<int, int>* p2c = new std::multimap<int, int>();
+	std::multimap<int, std::string>* ipList = new std::multimap<int, std::string>();
+
 	std::cout << "Getting all node entries from file.\n";
 	auto start = std::chrono::system_clock::now();
+    parseIPPrefix(ipList);
 	parsePartTwo(p2p, p2c);
 	auto end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;
@@ -52,6 +56,7 @@ int main(int argc, char *argv[]) {
 	elapsed_seconds = end - start;
 	std::cout << "\nDone with processing in " << elapsed_seconds.count() << " seconds\n";
 	
+	std::cout << "Part Two Completed\n";
 	/*
 	 * END PART TWO
 	 * BEGIN PART THREE

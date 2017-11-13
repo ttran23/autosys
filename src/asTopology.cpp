@@ -6,8 +6,8 @@
 
 void parseIPPrefix(std::multimap<std::string, double>* ip) {
     std::ifstream inFile;
-	// inFile.open("dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
-    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
+	inFile.open("dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
+    //inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
     
     if (!inFile) {
         std::cout << "Unable to open file in parseIP\n";
@@ -55,13 +55,12 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
-
 void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
 
 	// Open file
 	std::ifstream inFile;
-	// inFile.open("dataset_text_files/20170901.as-rel2.txt");
-    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/20170901.as-rel2.txt");
+	inFile.open("dataset_text_files/20170901.as-rel2.txt");
+    //inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/20170901.as-rel2.txt");
 
 	// Check that file exists
 	if (!inFile) {
@@ -127,36 +126,55 @@ void ipHistogram(std::multimap<std::string, int>* prefixMap, int *bin) {
 
 void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, std::multimap<std::string, double>* prefixMap) {
 	// Degree Map, AS Classifications
-	std::multimap<int, int> degreeMap;
+	std::multimap<int, int> degreeMap, p2pReversed, p2cReversed;
 	int eCount = 0, cCount = 0, tCount = 0;
     std::multimap<std::string, int>* prefixDegreeMap = new std::multimap<std::string, int>();
     int ipBin[5] = { 0, 0, 0, 0, 0 };
     std::vector<int> uniqueNodes;
     std::multimap<int, int> sorted;
-	// Iterate through p2p and p2c
+
+	// Making a temp p2p and p2c where the key and value are flipped for counting degree purposes
+	for (auto it = p2p->begin(); it != p2p->end(); it++) {
+		p2pReversed.insert(std::make_pair(it->second, it->first));
+	}
+	for (auto it = p2c->begin(); it != p2c->end(); it++) {
+		p2cReversed.insert(std::make_pair(it->second, it->first));
+	}
+
+	// Iterate through p2p
 	for (auto it = p2p->begin(); it != p2p->end(); it = p2p->upper_bound(it->first)) {
-        if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->first) == uniqueNodes.end()) {
+        // Doing some unique node stuff?? 
+		if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->first) == uniqueNodes.end()) {
             uniqueNodes.push_back(it->first);
         }
         if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->second) == uniqueNodes.end()) {
             uniqueNodes.push_back(it->second);
         }
-		degreeMap.insert(std::make_pair(it->first, p2p->count(it->first) + p2c->count(it->first)));
-		degreeMap.insert(std::make_pair(it->second, p2p->count(it->second) + p2c->count(it->second)));
+
+		// Adding to degree map, making sure to include when it->first is also a target
+		degreeMap.insert(std::make_pair(it->first, p2p->count(it->first) + p2c->count(it->first) + p2pReversed.count(it->first) + p2cReversed.count(it->first)));
+		degreeMap.insert(std::make_pair(it->second, p2p->count(it->second) + p2c->count(it->second) + p2pReversed.count(it->second) + p2cReversed.count(it->second)));
+
 		if (p2p->count(it->first) >= 1 && p2c->count(it->first) == 0) {
 			cCount++;	// At least one peer and no customer
 		}
 	}
-
+	// Iterate through p2c
 	for (auto it = p2c->begin(); it != p2c->end(); it = p2c->upper_bound(it->first)) {
         if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->first) == uniqueNodes.end()) {
             uniqueNodes.push_back(it->first);
         }
         if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->second) == uniqueNodes.end()) {
             uniqueNodes.push_back(it->second);
-        }
-		degreeMap.insert(std::make_pair(it->first, p2c->count(it->first)));
-		degreeMap.insert(std::make_pair(it->second, p2c->count(it->second)));
+		}
+
+		if (degreeMap.find(it->first) == degreeMap.end()) { // key does not exist
+			degreeMap.insert(std::make_pair(it->first, p2c->count(it->first) + p2cReversed.count(it->first)));
+		}
+		if (degreeMap.find(it->second) == degreeMap.end()) { // target key does not exist
+			degreeMap.insert(std::make_pair(it->second, p2c->count(it->second) + p2cReversed.count(it->second)));
+		}
+
 		tCount++; // At least one customer, increment transit
 		if (p2p->count(it->second) + p2c->count(it->second) <= 2
 			&& p2p->count(it->second) == 0
@@ -215,8 +233,8 @@ void writePartTwo(int *bin, int tC, int cC, int eC, int *ipBin) {
 
 	// Open file
 	std::ofstream outFile;
-	// outFile.open("output_text_files/partTwo.txt");
-    outFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/partTwo.txt");
+	outFile.open("output_text_files/partTwo.txt");
+    //outFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/partTwo.txt");
     
 	// Check that file exists
 	if (!outFile) {

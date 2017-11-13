@@ -16,5 +16,5 @@
 #include <map>
 
 std::multimap<int, int> sortDegree(std::multimap<int, int> degreeMap);
-
+void traverse(std::multimap<int, int> map, std::multimap<int, int>* p2p, std::multimap<int, int>* p2c );
 #endif /* asInference_h */

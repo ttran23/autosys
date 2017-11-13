@@ -1,5 +1,6 @@
 #include "asClassification.h"
 #include "asTopology.h"
+#include "asInference.h"
 #include <map>
 #include <chrono>
 #include <ctime>
@@ -40,7 +41,7 @@ int main(int argc, char *argv[]) {
 	std::multimap<int, int>* p2p = new std::multimap<int, int>();
 	std::multimap<int, int>* p2c = new std::multimap<int, int>();
     std::multimap<std::string, double>* ipList = new std::multimap<std::string, double>();
-    // std::multimap<std::string, int>* ipHisto = new std::multimap<std::string, int>();
+    std::multimap<int, int>* sorted = new std::multimap<int, int>();
 
 	std::cout << "Getting all node entries from file.\n";
 	auto start = std::chrono::system_clock::now();

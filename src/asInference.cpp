@@ -28,7 +28,7 @@ std::multimap<int, int> sortDegree(std::multimap<int, int> degreeMap) {
 void traverse(std::multimap<int, int> map, std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, std::vector<int>* clique) {
     int currAS = 0;
     bool doesNotExist = false;
-    for (auto it = map.end(); it != map.begin(); it = map.lower_bound(it->first)) {
+    for (auto it = map.rbegin(); it != map.rend(); it++) {
         if (currAS == 0) {
             currAS = it->second;
             clique->push_back(currAS);
@@ -77,8 +77,8 @@ void writeClique(std::vector<int>* clique) {
     
     // Open file
     std::ofstream outFile;
-    // outFile.open("output_text_files/partThree.txt");
-    outFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/partThree.txt");
+    outFile.open("output_text_files/partThree.txt");
+    //outFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/partThree.txt");
     
     // Check that file exists
     if (!outFile) {
@@ -88,7 +88,7 @@ void writeClique(std::vector<int>* clique) {
     
     outFile << "Total size count of clique: " << clique->size() << std::endl;
     outFile << "First 10 nodes:" << std::endl;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10 && i < clique->size(); i++) {
         outFile << clique->at(i) << std::endl;
     }
     

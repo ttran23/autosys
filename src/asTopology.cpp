@@ -142,7 +142,8 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, 
 	for (auto it = p2c->begin(); it != p2c->end(); it++) {
 		p2cReversed.insert(std::make_pair(it->second, it->first));
 	}
-
+	
+	auto start = std::chrono::system_clock::now();
 	// Iterate through p2p
 	for (auto it = p2p->begin(); it != p2p->end(); it = p2p->upper_bound(it->first)) {
         // Doing some unique node stuff?? 
@@ -165,6 +166,7 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, 
 			cCount++;	// At least one peer and no customer
 		}
 	}
+
 	// Iterate through p2c
 	for (auto it = p2c->begin(); it != p2c->end(); it = p2c->upper_bound(it->first)) {
         if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->first) == uniqueNodes.end()) {
@@ -191,10 +193,33 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, 
 		}
 	}
     
+	// Iterate through p2pReversed to make sure all node degree are accounted for
+	for (auto it = p2pReversed.begin(); it != p2pReversed.end(); it = p2pReversed.upper_bound(it->first)) {
+		if (degreeMap.find(it->first) == degreeMap.end()) { // key does not exist
+			degreeMap.insert(std::make_pair(it->first, p2p->count(it->first) + p2c->count(it->first) + p2pReversed.count(it->first) + p2cReversed.count(it->first)));
+		}
+		if (degreeMap.find(it->second) == degreeMap.end()) { // key does not exist
+			degreeMap.insert(std::make_pair(it->second, p2p->count(it->second) + p2c->count(it->second) + p2pReversed.count(it->second) + p2cReversed.count(it->second)));
+		}
+	}
+
+	// Iterate through p2cReversed to make sure all node degree are accounted for
+	for (auto it = p2cReversed.begin(); it != p2cReversed.end(); it = p2cReversed.upper_bound(it->first)) {
+		if (degreeMap.find(it->first) == degreeMap.end()) { // key does not exist
+			degreeMap.insert(std::make_pair(it->first, p2c->count(it->first) + p2cReversed.count(it->first)));
+		}
+		if (degreeMap.find(it->second) == degreeMap.end()) { // target key does not exist
+			degreeMap.insert(std::make_pair(it->second, p2c->count(it->second) + p2cReversed.count(it->second)));
+		}
+	}
+
+	auto end = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	std::cout << "Done making degreeMap in " << elapsed_seconds.count() << " seconds.\n";
     // PART 3 related function
     sorted = sortDegree(degreeMap);
     traverse(sorted, p2p, p2c, clique);
-    writeClique(clique);
+	writeClique(clique);
     
     int temp = 0;
     for (auto it = prefixMap->begin(); it != prefixMap->end(); it = prefixMap->upper_bound(it->first)) {
@@ -246,7 +271,7 @@ void writePartTwo(int *bin, int tC, int cC, int eC, int *ipBin) {
     
 	// Check that file exists
 	if (!outFile) {
-		std::cout << "Unable to open file\n";
+		std::cout << "Unable to open file in WritePartTwo\n";
 		exit(1);
 	}
 
@@ -263,10 +288,7 @@ void writePartTwo(int *bin, int tC, int cC, int eC, int *ipBin) {
 	outFile << "Bin 1000+: " << bin[6] << std::endl;
 
 	// Variables and output of Graph 3
-	// TODO
-	outFile << "\nGraph 3: \n\n";
-    
-    outFile << "Graph 3 total IP entries: " << ipBin[0] + ipBin[1] + ipBin[2] + ipBin[3] + ipBin[4] << std::endl;
+    outFile << "Graph 3: Total IP entries: " << ipBin[0] + ipBin[1] + ipBin[2] + ipBin[3] + ipBin[4] << std::endl;
     outFile << "Class A (1.0.0.0 to 127.255.255.255): " << ipBin[0] << std::endl;
     outFile << "Class B (128.0.0.0 to 191.255.255.255): " << ipBin[1] << std::endl;
     outFile << "Class C (192.0.0.0 to 223.255.255.255): " << ipBin[2] << std::endl;

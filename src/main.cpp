@@ -49,9 +49,9 @@ int main(int argc, char *argv[]) {
 	parsePartTwo(p2p, p2c);
 	auto end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;
-	std::cout << "File parsing completed in " << elapsed_seconds.count() << " seconds.\n";
+	std::cout << "Done with file parsing in " << elapsed_seconds.count() << " seconds.\n";
 	
-	std::cout << "\n Start processing data and get degrees\n";
+	std::cout << "\nStart processing data and get degrees\n";
 	start = std::chrono::system_clock::now();
 	processPartTwo(p2p, p2c, ipList);
 	end = std::chrono::system_clock::now();

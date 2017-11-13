@@ -8,6 +8,7 @@
 #ifndef asInference_h
 #define asInference_h
 
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <sstream>

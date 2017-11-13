@@ -80,7 +80,6 @@ std::vector<int> traverse(std::multimap<int, int> map, std::multimap<int, int>* 
         
         
         if (doesNotExist) {
-            output.clear();
             return output;
         }
     }
@@ -92,8 +91,8 @@ void writeClique(std::vector<int> clique) {
     
     // Open file
     std::ofstream outFile;
-    outFile.open("output_text_files/partThree.txt");
-    //outFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/partThree.txt");
+    //outFile.open("output_text_files/partThree.txt");
+    outFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/output_text_files/partThree.txt");
     
     // Check that file exists
     if (!outFile) {

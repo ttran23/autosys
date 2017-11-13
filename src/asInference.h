@@ -11,10 +11,12 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include <vector>
 #include <string>
 #include <map>
 
 std::multimap<int, int> sortDegree(std::multimap<int, int> degreeMap);
-void traverse(std::multimap<int, int> map, std::multimap<int, int>* p2p, std::multimap<int, int>* p2c );
+void traverse(std::multimap<int, int> map, std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, std::vector<int>* clique);
+void writeClique(std::vector<int>* clique);
 #endif /* asInference_h */

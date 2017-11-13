@@ -133,6 +133,7 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, 
     int ipBin[5] = { 0, 0, 0, 0, 0 };
     std::vector<int> uniqueNodes;
     std::multimap<int, int> sorted;
+    std::vector<int>* clique = new std::vector<int>();
 	// Iterate through p2p and p2c
 	for (auto it = p2p->begin(); it != p2p->end(); it = p2p->upper_bound(it->first)) {
         if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->first) == uniqueNodes.end()) {
@@ -167,11 +168,13 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, 
     
     // PART 3 related function
     sorted = sortDegree(degreeMap);
+    traverse(sorted, p2p, p2c, clique);
+    writeClique(clique);
     
-
+    int temp = 0;
     for (auto it = prefixMap->begin(); it != prefixMap->end(); it = prefixMap->upper_bound(it->first)) {
         if (it->second <= 2147483647) {
-            int temp = it->second;
+            temp = it->second;
             if (std::find(uniqueNodes.begin(), uniqueNodes.end(), temp) != uniqueNodes.end()) {
                 prefixDegreeMap->insert(std::make_pair(it->first, temp));
             }

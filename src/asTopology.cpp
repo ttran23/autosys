@@ -6,8 +6,8 @@
 
 void parseIPPrefix(std::multimap<std::string, double>* ip) {
     std::ifstream inFile;
-	inFile.open("dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
-    //inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
+	//inFile.open("dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
+    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
     
     if (!inFile) {
         std::cout << "Unable to open file in parseIP\n";
@@ -59,8 +59,8 @@ void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
 
 	// Open file
 	std::ifstream inFile;
-	inFile.open("dataset_text_files/20170901.as-rel2.txt");
-    //inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/20170901.as-rel2.txt");
+	// inFile.open("dataset_text_files/20170901.as-rel2.txt");
+    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/20170901.as-rel2.txt");
 
 	// Check that file exists
 	if (!inFile) {
@@ -132,7 +132,7 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, 
     int ipBin[5] = { 0, 0, 0, 0, 0 };
     std::vector<int> uniqueNodes;
     std::multimap<int, int> sorted;
-    std::vector<int>* clique = new std::vector<int>();
+    std::vector<int> clique;
 	// Iterate through p2p and p2c
 
 	// Making a temp p2p and p2c where the key and value are flipped for counting degree purposes
@@ -218,7 +218,7 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, 
 	std::cout << "Done making degreeMap in " << elapsed_seconds.count() << " seconds.\n";
     // PART 3 related function
     sorted = sortDegree(degreeMap);
-    traverse(sorted, p2p, p2c, clique);
+    clique = traverse(sorted, p2p, p2c);
 	writeClique(clique);
     
     int temp = 0;

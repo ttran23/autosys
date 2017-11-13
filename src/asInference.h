@@ -18,6 +18,6 @@
 #include <map>
 
 std::multimap<int, int> sortDegree(std::multimap<int, int> degreeMap);
-void traverse(std::multimap<int, int> map, std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, std::vector<int>* clique);
-void writeClique(std::vector<int>* clique);
+std::vector<int> traverse(std::multimap<int, int> map, std::multimap<int, int>* p2p, std::multimap<int, int>* p2c);
+void writeClique(std::vector<int> clique);
 #endif /* asInference_h */

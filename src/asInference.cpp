@@ -25,55 +25,70 @@ std::multimap<int, int> sortDegree(std::multimap<int, int> degreeMap) {
     return sorted;
 }
 
-void traverse(std::multimap<int, int> map, std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, std::vector<int>* clique) {
+std::vector<int> traverse(std::multimap<int, int> map, std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
     int currAS = 0;
     bool doesNotExist = false;
+    bool found = false;
+    std::vector<int> output;
     for (auto it = map.rbegin(); it != map.rend(); it++) {
-        if (currAS == 0) {
-            currAS = it->second;
-            clique->push_back(currAS);
+        currAS = it->second;
+        found = false;
+        if (it == map.rbegin()) {
+            output.push_back(currAS);
             continue;
         }
         
         for (auto iter1 = p2p->begin(); iter1 != p2p->end(); iter1 = p2p->upper_bound(iter1->first)) {
             if (iter1->first == it->second) {
-                currAS = iter1->first;
-                clique->push_back(currAS);
+                //currAS = iter1->first;
+                output.push_back(currAS);
                 doesNotExist = false;
+                found = true;
+                break;
             }
             else if (iter1->second == it->second) {
-                currAS = iter1->second;
-                clique->push_back(currAS);
+                //currAS = iter1->second;
+                output.push_back(currAS);
                 doesNotExist = false;
+                found = true;
+                break;
             }
             else {
                 doesNotExist = true;
             }
         }
         
-        for (auto iter2 = p2c->begin(); iter2 != p2c->end(); iter2 = p2c->upper_bound(iter2->first)) {
-            if (iter2->first == it->second) {
-                currAS = iter2->first;
-                clique->push_back(currAS);
-                doesNotExist = false;
-            }
-            else if (iter2->second == it->second) {
-                currAS = iter2->second;
-                clique->push_back(currAS);
-                doesNotExist = false;
-            }
-            else {
-                doesNotExist = true;
+        if (!found) {
+            for (auto iter2 = p2c->begin(); iter2 != p2c->end(); iter2 = p2c->upper_bound(iter2->first)) {
+                if (iter2->first == it->second) {
+                    //currAS = iter2->first;
+                    output.push_back(currAS);
+                    doesNotExist = false;
+                    break;
+                }
+                else if (iter2->second == it->second) {
+                    //currAS = iter2->second;
+                    output.push_back(currAS);
+                    doesNotExist = false;
+                    break;
+                }
+                else {
+                    doesNotExist = true;
+                }
             }
         }
+        
         
         if (doesNotExist) {
-            break;
+            output.clear();
+            return output;
         }
     }
+    
+    return output;
 }
 
-void writeClique(std::vector<int>* clique) {
+void writeClique(std::vector<int> clique) {
     
     // Open file
     std::ofstream outFile;
@@ -86,10 +101,10 @@ void writeClique(std::vector<int>* clique) {
         exit(1);
     }
     
-    outFile << "Total size count of clique: " << clique->size() << std::endl;
+    outFile << "Total size count of clique: " << clique.size() << std::endl;
     outFile << "First 10 nodes:" << std::endl;
-    for (int i = 0; i < 10 && i < clique->size(); i++) {
-        outFile << clique->at(i) << std::endl;
+    for (int i = 0; i < 10 && i < clique.size(); i++) {
+        outFile << clique.at(i) << std::endl;
     }
     
     outFile.close();

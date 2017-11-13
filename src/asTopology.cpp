@@ -60,8 +60,8 @@ void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
 
 	// Open file
 	std::ifstream inFile;
-	inFile.open("dataset_text_files/20170901.as-rel2.txt");
-    //inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/20170901.as-rel2.txt");
+	// inFile.open("dataset_text_files/20170901.as-rel2.txt");
+    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/20170901.as-rel2.txt");
 
 	// Check that file exists
 	if (!inFile) {
@@ -91,8 +91,9 @@ void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
 	inFile.close();
 }
 
-void ipHistogram(std::multimap<std::string, double>* prefixMap, int *bin) {
+void ipHistogram(std::multimap<std::string, int>* prefixMap, int *bin) {
     int classTemp = 0;
+    int AScount = 0;
     std::string prefixTemp;
     std::string::size_type index;
     for (auto it = prefixMap->begin(); it != prefixMap->end(); it = prefixMap->upper_bound(it->first)) {
@@ -100,20 +101,21 @@ void ipHistogram(std::multimap<std::string, double>* prefixMap, int *bin) {
         index = prefixTemp.find('.');
         prefixTemp.erase(prefixTemp.begin() + index, prefixTemp.end());
         classTemp = std::stoi(prefixTemp);
+        AScount = prefixMap->count(it->first);
         if (classTemp >= 1 && classTemp <= 127) {
-            bin[0]++;
+            bin[0] += AScount;
         }
         else if (classTemp >= 128 && classTemp <= 191) {
-            bin[1]++;
+            bin[1] += AScount;
         }
         else if (classTemp >= 192 && classTemp <= 223) {
-            bin[2]++;
+            bin[2] += AScount;
         }
         else if (classTemp >= 224 && classTemp <= 239) {
-            bin[3]++;
+            bin[3] += AScount;
         }
         else if (classTemp >= 240 && classTemp <= 255) {
-            bin[4]++;
+            bin[4] += AScount;
         }
         else {
             std::cout << "Something went wrong when creating the IP histogram!" << std::endl;
@@ -123,13 +125,27 @@ void ipHistogram(std::multimap<std::string, double>* prefixMap, int *bin) {
     }
 }
 
-void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
+void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, std::multimap<std::string, double>* prefixMap) {
 	// Degree Map, AS Classifications
 	std::multimap<int, int> degreeMap;
 	int eCount = 0, cCount = 0, tCount = 0;
-	
+    std::multimap<std::string, int>* prefixDegreeMap = new std::multimap<std::string, int>();
+    int ipBin[5] = { 0, 0, 0, 0, 0 };
+    std::vector<int> uniqueNodes;
 	// Iterate through p2p and p2c
 	for (auto it = p2p->begin(); it != p2p->end(); it = p2p->upper_bound(it->first)) {
+        /*
+        if (uniqueNodes.empty()) {
+            uniqueNodes.push_back(it->first);
+            uniqueNodes.push_back(it->second);
+        }
+         */
+        if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->first) == uniqueNodes.end()) {
+            uniqueNodes.push_back(it->first);
+        }
+        if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->second) == uniqueNodes.end()) {
+            uniqueNodes.push_back(it->second);
+        }
 		degreeMap.insert(std::make_pair(it->first, p2p->count(it->first) + p2c->count(it->first)));
 		if (p2p->count(it->first) >= 1 && p2c->count(it->first) == 0) {
 			cCount++;	// At least one peer and no customer
@@ -137,6 +153,12 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) 
 	}
 
 	for (auto it = p2c->begin(); it != p2c->end(); it = p2c->upper_bound(it->first)) {
+        if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->first) == uniqueNodes.end()) {
+            uniqueNodes.push_back(it->first);
+        }
+        if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->second) == uniqueNodes.end()) {
+            uniqueNodes.push_back(it->second);
+        }
 		degreeMap.insert(std::make_pair(it->first, p2c->count(it->first)));
 		tCount++; // At least one customer, increment transit
 		if (p2p->count(it->second) + p2c->count(it->second) <= 2
@@ -148,6 +170,18 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) 
 		}
 	}
 
+    for (auto it = prefixMap->begin(); it != prefixMap->end(); it = prefixMap->upper_bound(it->first)) {
+        if (it->second <= 2147483647) {
+            int temp = it->second;
+            if (std::find(uniqueNodes.begin(), uniqueNodes.end(), temp) != uniqueNodes.end()) {
+                prefixDegreeMap->insert(std::make_pair(it->first, temp));
+            }
+            // prefixDegreeMap->insert(std::make_pair(it->first, it->second));
+        }
+    }
+    
+    ipHistogram(prefixDegreeMap, ipBin);
+    
 	// Setting into bins for Graph 2
 	int bin[7] = { 0, 0, 0, 0, 0, 0, 0 };
 	

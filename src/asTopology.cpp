@@ -132,14 +132,9 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, 
     std::multimap<std::string, int>* prefixDegreeMap = new std::multimap<std::string, int>();
     int ipBin[5] = { 0, 0, 0, 0, 0 };
     std::vector<int> uniqueNodes;
+    std::multimap<int, int> sorted;
 	// Iterate through p2p and p2c
 	for (auto it = p2p->begin(); it != p2p->end(); it = p2p->upper_bound(it->first)) {
-        /*
-        if (uniqueNodes.empty()) {
-            uniqueNodes.push_back(it->first);
-            uniqueNodes.push_back(it->second);
-        }
-         */
         if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->first) == uniqueNodes.end()) {
             uniqueNodes.push_back(it->first);
         }
@@ -171,6 +166,10 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, 
 			// since any p2p link is disqualified.
 		}
 	}
+    
+    // PART 3 related function
+    sorted = sortDegree(degreeMap);
+    
 
     for (auto it = prefixMap->begin(); it != prefixMap->end(); it = prefixMap->upper_bound(it->first)) {
         if (it->second <= 2147483647) {
@@ -178,7 +177,6 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, 
             if (std::find(uniqueNodes.begin(), uniqueNodes.end(), temp) != uniqueNodes.end()) {
                 prefixDegreeMap->insert(std::make_pair(it->first, temp));
             }
-            // prefixDegreeMap->insert(std::make_pair(it->first, it->second));
         }
     }
     
@@ -210,16 +208,16 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, 
 			bin[0]++;	// Trash Bin
 		}
 	}
-    int ipBinTemp[5] = { 0, 0, 0, 0, 0 };
-	writePartTwo(bin, tCount, cCount, eCount, ipBinTemp);
+	writePartTwo(bin, tCount, cCount, eCount, ipBin);
 }
 
 void writePartTwo(int *bin, int tC, int cC, int eC, int *ipBin) {
 
 	// Open file
 	std::ofstream outFile;
-	outFile.open("output_text_files/partTwo.txt");
-
+	// outFile.open("output_text_files/partTwo.txt");
+    outFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/partTwo.txt");
+    
 	// Check that file exists
 	if (!outFile) {
 		std::cout << "Unable to open file\n";

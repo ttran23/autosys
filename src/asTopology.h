@@ -1,6 +1,7 @@
 #ifndef ASTOPOLOGY_H
 #define ASTOPOLOGY_H
 
+#include "asInference.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>

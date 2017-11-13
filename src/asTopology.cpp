@@ -4,10 +4,10 @@
 #include <chrono>
 #include <ctime>
 
-void parseIPPrefix(std::multimap<double, std::string>* ip) {
+void parseIPPrefix(std::multimap<std::string, double>* ip) {
     std::ifstream inFile;
-	inFile.open("dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
-    //inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
+	// inFile.open("dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
+    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
     
     if (!inFile) {
         std::cout << "Unable to open file in parseIP\n";
@@ -27,12 +27,12 @@ void parseIPPrefix(std::multimap<double, std::string>* ip) {
         if ((index = ASnum.find('_')) != std::string::npos) {
             nodeList = split(ASnum, '_');
             for (int i = 0; i < nodeList.size(); i++) {
-                ip->insert(std::make_pair(std::stod(nodeList.at(i)), prefixTemp));
+                ip->insert(std::make_pair(prefixTemp, std::stod(nodeList.at(i))));
             }
         }
         else {
             AS = std::stod(ASnum);
-            ip->insert(std::make_pair(AS, prefixTemp));
+            ip->insert(std::make_pair(prefixTemp, AS));
         }
         prefixTemp.clear();
     }
@@ -60,8 +60,8 @@ void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
 
 	// Open file
 	std::ifstream inFile;
-	inFile.open("dataset_text_files/20170901.as-rel2.txt");
-    //inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/20170901.as-rel2.txt");
+	// inFile.open("dataset_text_files/20170901.as-rel2.txt");
+    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/20170901.as-rel2.txt");
 
 	// Check that file exists
 	if (!inFile) {
@@ -91,13 +91,61 @@ void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
 	inFile.close();
 }
 
-void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
+void ipHistogram(std::multimap<std::string, int>* prefixMap, int *bin) {
+    int classTemp = 0;
+    int AScount = 0;
+    std::string prefixTemp;
+    std::string::size_type index;
+    for (auto it = prefixMap->begin(); it != prefixMap->end(); it = prefixMap->upper_bound(it->first)) {
+        prefixTemp.append(it->first);
+        index = prefixTemp.find('.');
+        prefixTemp.erase(prefixTemp.begin() + index, prefixTemp.end());
+        classTemp = std::stoi(prefixTemp);
+        AScount = prefixMap->count(it->first);
+        if (classTemp >= 1 && classTemp <= 127) {
+            bin[0] += AScount;
+        }
+        else if (classTemp >= 128 && classTemp <= 191) {
+            bin[1] += AScount;
+        }
+        else if (classTemp >= 192 && classTemp <= 223) {
+            bin[2] += AScount;
+        }
+        else if (classTemp >= 224 && classTemp <= 239) {
+            bin[3] += AScount;
+        }
+        else if (classTemp >= 240 && classTemp <= 255) {
+            bin[4] += AScount;
+        }
+        else {
+            std::cout << "Something went wrong when creating the IP histogram!" << std::endl;
+            exit(-1);
+        }
+        prefixTemp.clear();
+    }
+}
+
+void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, std::multimap<std::string, double>* prefixMap) {
 	// Degree Map, AS Classifications
 	std::multimap<int, int> degreeMap;
 	int eCount = 0, cCount = 0, tCount = 0;
-	
+    std::multimap<std::string, int>* prefixDegreeMap = new std::multimap<std::string, int>();
+    int ipBin[5] = { 0, 0, 0, 0, 0 };
+    std::vector<int> uniqueNodes;
 	// Iterate through p2p and p2c
 	for (auto it = p2p->begin(); it != p2p->end(); it = p2p->upper_bound(it->first)) {
+        /*
+        if (uniqueNodes.empty()) {
+            uniqueNodes.push_back(it->first);
+            uniqueNodes.push_back(it->second);
+        }
+         */
+        if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->first) == uniqueNodes.end()) {
+            uniqueNodes.push_back(it->first);
+        }
+        if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->second) == uniqueNodes.end()) {
+            uniqueNodes.push_back(it->second);
+        }
 		degreeMap.insert(std::make_pair(it->first, p2p->count(it->first) + p2c->count(it->first)));
 		degreeMap.insert(std::make_pair(it->second, p2p->count(it->second) + p2c->count(it->second)));
 		if (p2p->count(it->first) >= 1 && p2c->count(it->first) == 0) {
@@ -106,6 +154,12 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) 
 	}
 
 	for (auto it = p2c->begin(); it != p2c->end(); it = p2c->upper_bound(it->first)) {
+        if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->first) == uniqueNodes.end()) {
+            uniqueNodes.push_back(it->first);
+        }
+        if (std::find(uniqueNodes.begin(), uniqueNodes.end(), it->second) == uniqueNodes.end()) {
+            uniqueNodes.push_back(it->second);
+        }
 		degreeMap.insert(std::make_pair(it->first, p2c->count(it->first)));
 		degreeMap.insert(std::make_pair(it->second, p2c->count(it->second)));
 		tCount++; // At least one customer, increment transit
@@ -118,6 +172,18 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) 
 		}
 	}
 
+    for (auto it = prefixMap->begin(); it != prefixMap->end(); it = prefixMap->upper_bound(it->first)) {
+        if (it->second <= 2147483647) {
+            int temp = it->second;
+            if (std::find(uniqueNodes.begin(), uniqueNodes.end(), temp) != uniqueNodes.end()) {
+                prefixDegreeMap->insert(std::make_pair(it->first, temp));
+            }
+            // prefixDegreeMap->insert(std::make_pair(it->first, it->second));
+        }
+    }
+    
+    ipHistogram(prefixDegreeMap, ipBin);
+    
 	// Setting into bins for Graph 2
 	int bin[7] = { 0, 0, 0, 0, 0, 0, 0 };
 	
@@ -144,11 +210,11 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) 
 			bin[0]++;	// Trash Bin
 		}
 	}
-
-	writePartTwo(bin, tCount, cCount, eCount);
+    int ipBinTemp[5] = { 0, 0, 0, 0, 0 };
+	writePartTwo(bin, tCount, cCount, eCount, ipBinTemp);
 }
 
-void writePartTwo(int *bin, int tC, int cC, int eC) {
+void writePartTwo(int *bin, int tC, int cC, int eC, int *ipBin) {
 
 	// Open file
 	std::ofstream outFile;
@@ -175,6 +241,13 @@ void writePartTwo(int *bin, int tC, int cC, int eC) {
 	// Variables and output of Graph 3
 	// TODO
 	outFile << "\nGraph 3: \n\n";
+    
+    outFile << "Graph 3 total IP entries: " << ipBin[0] + ipBin[1] + ipBin[2] + ipBin[3] + ipBin[4] << std::endl;
+    outFile << "Class A (1.0.0.0 to 127.255.255.255): " << ipBin[0] << std::endl;
+    outFile << "Class B (128.0.0.0 to 191.255.255.255): " << ipBin[1] << std::endl;
+    outFile << "Class C (192.0.0.0 to 223.255.255.255): " << ipBin[2] << std::endl;
+    outFile << "Class D (224.0.0.0 to 239.255.255.255): " << ipBin[3] << std::endl;
+    outFile << "Class E (240.0.0.0 to 255.255.255.255): " << ipBin[4] << std::endl;
 
 	// Variables and output of Graph 4
 	double totalCount = tC + cC + eC;

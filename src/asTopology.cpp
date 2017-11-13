@@ -154,8 +154,12 @@ void processPartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c, 
         }
 
 		// Adding to degree map, making sure to include when it->first is also a target
-		degreeMap.insert(std::make_pair(it->first, p2p->count(it->first) + p2c->count(it->first) + p2pReversed.count(it->first) + p2cReversed.count(it->first)));
-		degreeMap.insert(std::make_pair(it->second, p2p->count(it->second) + p2c->count(it->second) + p2pReversed.count(it->second) + p2cReversed.count(it->second)));
+		if (degreeMap.find(it->first) == degreeMap.end()) { // key does not exist
+			degreeMap.insert(std::make_pair(it->first, p2p->count(it->first) + p2c->count(it->first) + p2pReversed.count(it->first) + p2cReversed.count(it->first)));
+		}
+		if (degreeMap.find(it->second) == degreeMap.end()) { // key does not exist
+			degreeMap.insert(std::make_pair(it->second, p2p->count(it->second) + p2c->count(it->second) + p2pReversed.count(it->second) + p2cReversed.count(it->second)));
+		}
 
 		if (p2p->count(it->first) >= 1 && p2c->count(it->first) == 0) {
 			cCount++;	// At least one peer and no customer

@@ -6,8 +6,8 @@
 
 void parseIPPrefix(std::multimap<std::string, double>* ip) {
     std::ifstream inFile;
-	//inFile.open("dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
-    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
+	inFile.open("dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
+    //inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/routeviews-rv2-20171110-1200.pfx2as.txt");
     
     if (!inFile) {
         std::cout << "Unable to open file in parseIP\n";
@@ -59,8 +59,8 @@ void parsePartTwo(std::multimap<int, int>* p2p, std::multimap<int, int>* p2c) {
 
 	// Open file
 	std::ifstream inFile;
-	// inFile.open("dataset_text_files/20170901.as-rel2.txt");
-    inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/20170901.as-rel2.txt");
+	inFile.open("dataset_text_files/20170901.as-rel2.txt");
+    //inFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/dataset_text_files/20170901.as-rel2.txt");
 
 	// Check that file exists
 	if (!inFile) {
@@ -278,7 +278,7 @@ void writePartTwo(int *bin, int tC, int cC, int eC, int *ipBin) {
 	// Variables and output of Graph 2
 	int totalBin = bin[0] + bin[1] + bin[2] + bin[3] + bin[4] + bin[5] + bin[6];
 
-	outFile << "\nGraph 2: There were a total of " << totalBin << "entries.\n";
+	outFile << "Graph 2: Total Bin entries: " << totalBin << std::endl;
 	outFile << "Bin < 1: " << bin[0] << std::endl;
 	outFile << "Bin 1: " << bin[1] << std::endl;
 	outFile << "Bin 2-5: " << bin[2] << std::endl;
@@ -288,12 +288,12 @@ void writePartTwo(int *bin, int tC, int cC, int eC, int *ipBin) {
 	outFile << "Bin 1000+: " << bin[6] << std::endl;
 
 	// Variables and output of Graph 3
-    outFile << "Graph 3: Total IP entries: " << ipBin[0] + ipBin[1] + ipBin[2] + ipBin[3] + ipBin[4] << std::endl;
-    outFile << "Class A (1.0.0.0 to 127.255.255.255): " << ipBin[0] << std::endl;
-    outFile << "Class B (128.0.0.0 to 191.255.255.255): " << ipBin[1] << std::endl;
-    outFile << "Class C (192.0.0.0 to 223.255.255.255): " << ipBin[2] << std::endl;
-    outFile << "Class D (224.0.0.0 to 239.255.255.255): " << ipBin[3] << std::endl;
-    outFile << "Class E (240.0.0.0 to 255.255.255.255): " << ipBin[4] << std::endl;
+    outFile << "\nGraph 3: Total IP entries: " << ipBin[0] + ipBin[1] + ipBin[2] + ipBin[3] + ipBin[4] << std::endl;
+    outFile << "Class A (1.0.0.0 to 127.255.255.255):\t\t" << ipBin[0] << std::endl;
+    outFile << "Class B (128.0.0.0 to 191.255.255.255):\t" << ipBin[1] << std::endl;
+    outFile << "Class C (192.0.0.0 to 223.255.255.255):\t" << ipBin[2] << std::endl;
+    outFile << "Class D (224.0.0.0 to 239.255.255.255):\t" << ipBin[3] << std::endl;
+    outFile << "Class E (240.0.0.0 to 255.255.255.255):\t" << ipBin[4] << std::endl;
 
 	// Variables and output of Graph 4
 	double totalCount = tC + cC + eC;
@@ -301,10 +301,10 @@ void writePartTwo(int *bin, int tC, int cC, int eC, int *ipBin) {
 	double ePercent = (double)eC / totalCount * 100.0;
 	double cPercent = (double)cC / totalCount * 100.0;
 
-	outFile << "\nGraph 4: There were a total of " << totalCount << "entries. Of which, the class distribution are as follows:\n";
-	outFile << "Transit/Access = " << tC << "\twith a percentage of " << tPercent << std::endl;
-	outFile << "Enterprise = " << eC << "\t\twith a percentage of " << ePercent << std::endl;
-	outFile << "Content = " << cC << "\t\t\twith a percentage of " << cPercent << std::endl;
+	outFile << "\nGraph 4: Total classification entries: " << totalCount << std::endl;
+	outFile << "Transit/Access = " << tC << "\nw/ a percentage of " << tPercent << std::endl << std::endl;
+	outFile << "Enterprise = " << eC << "\nw/ a percentage of " << ePercent << std::endl << std::endl;
+	outFile << "Content = " << cC << "\nw/ a percentage of " << cPercent;
 	outFile << "\n\n\n";
 
 	outFile.close();

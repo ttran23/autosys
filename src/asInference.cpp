@@ -29,55 +29,76 @@ std::vector<int> traverse(std::multimap<int, int> map, std::multimap<int, int>* 
     int currAS = 0;
     bool doesNotExist = false;
     bool found = false;
+	int foundInSet = 0;
     std::vector<int> output;
+
+	std::multimap<int, int> allConnections = *p2p;
+	for (auto it = p2c->begin(); it != p2c->end(); it++) {
+		allConnections.insert(std::make_pair(it->first, it->second));
+	}
+	std::multimap<int, int> allConnectionsFlipped = flip_map(allConnections);
+
     for (auto it = map.rbegin(); it != map.rend(); it++) {
-        currAS = it->second;
+        currAS = it->second;	// Current highest deg AS
         found = false;
-        if (it == map.rbegin()) {
+        if (it == map.rbegin()) {	// First node, always pushed to set S
             output.push_back(currAS);
             continue;
         }
         
-        for (auto iter1 = p2p->begin(); iter1 != p2p->end(); iter1 = p2p->upper_bound(iter1->first)) {
-            if (iter1->first == it->second) {
-                //currAS = iter1->first;
-                output.push_back(currAS);
-                doesNotExist = false;
-                found = true;
-                break;
-            }
-            else if (iter1->second == it->second) {
-                //currAS = iter1->second;
-                output.push_back(currAS);
-                doesNotExist = false;
-                found = true;
-                break;
-            }
-            else {
-                doesNotExist = true;
-            }
-        }
-        
-        if (!found) {
-            for (auto iter2 = p2c->begin(); iter2 != p2c->end(); iter2 = p2c->upper_bound(iter2->first)) {
-                if (iter2->first == it->second) {
-                    //currAS = iter2->first;
-                    output.push_back(currAS);
-                    doesNotExist = false;
-                    break;
-                }
-                else if (iter2->second == it->second) {
-                    //currAS = iter2->second;
-                    output.push_back(currAS);
-                    doesNotExist = false;
-                    break;
-                }
-                else {
-                    doesNotExist = true;
-                }
-            }
-        }
-        
+		foundInSet = 0;
+		// Go through current list, to make sure all connections are valid.
+		for (auto outIt = output.begin(); outIt != output.end(); outIt++) {
+			// Set the current output, should be 6939, then next loop will be 6939, 174, etc
+			int currInSet = *outIt;
+			found = false;
+			// Iterate through first column list for if any connection (p2p or p2c) is found. Probably will take ages to run
+			for (auto iter1 = allConnections.begin(); iter1 != allConnections.end(); iter1 = allConnections.upper_bound(iter1->first)) {
+				// Check if source is our current AS, and second is an element in the set.
+				if (iter1->first == currAS) {
+					for (unsigned int i = 0; i < allConnections.count(currAS); i++) {
+						if ((iter1->first == currAS && iter1->second == currInSet)
+							|| (iter1->second == currAS && iter1->first == currInSet)) {
+							foundInSet++;
+							found = true;
+							break;
+						}
+						iter1++;
+					}
+				}
+				if (found) break;
+			}
+			if (found) continue;
+
+			// Iterate through second column
+			for (auto iter1 = allConnectionsFlipped.begin(); iter1 != allConnectionsFlipped.end(); iter1 = allConnectionsFlipped.upper_bound(iter1->first)) {
+				// Check if source is our current AS, and second is an element in the set.
+				if (iter1->first == currAS) {
+					for (unsigned int i = 0; i < allConnectionsFlipped.count(currAS); i++) {
+						if ((iter1->first == currAS && iter1->second == currInSet)
+							|| (iter1->second == currAS && iter1->first == currInSet)) {
+							foundInSet++;
+							found = true;
+							break;
+						}
+						iter1++;
+					}
+				}
+				if (found) break;
+			}
+		}
+
+		// If the amount found in set == size, then all connections accounted for
+		if (foundInSet >= output.size()) {
+			output.push_back(currAS);	// Add to output vector
+			doesNotExist = false;
+			found = true;
+			continue;	// No need to check p2c as curr AS already found all.
+		}
+		else {
+			doesNotExist = true;
+			found = false;
+		}
         
         if (doesNotExist) {
             return output;
@@ -91,8 +112,8 @@ void writeClique(std::vector<int> clique) {
     
     // Open file
     std::ofstream outFile;
-    //outFile.open("output_text_files/partThree.txt");
-    outFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/output_text_files/partThree.txt");
+    outFile.open("output_text_files/partThree.txt");
+    //outFile.open("/Users/Jason/Desktop/Xcode/ECE_478/autosys/src/output_text_files/partThree.txt");
     
     // Check that file exists
     if (!outFile) {
@@ -100,10 +121,10 @@ void writeClique(std::vector<int> clique) {
         exit(1);
     }
     
-    outFile << "Total size count of clique: " << clique.size() << std::endl;
-    outFile << "First 10 nodes:" << std::endl;
+    outFile << "Table 1/Graph 5:\nTotal size count of clique: " << clique.size() << std::endl;
+    outFile << "First 10 nodes:";
     for (int i = 0; i < 10 && i < clique.size(); i++) {
-        outFile << clique.at(i) << std::endl;
+		outFile << std::endl << clique.at(i);
     }
     
     outFile.close();

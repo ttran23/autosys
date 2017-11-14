@@ -45,9 +45,8 @@ void writePartOne(int tC, int cC, int eC, int total) {
 	double cPercent = (double)cC / (double)total * 100.0;
 
 	outFile << "There were a total of " << total << "entries. Of which, the class distribution are as follows:\n";
-	outFile << "Transit/Access = " << tC << "\twith a percentage of " << tPercent << std::endl;
-	outFile << "Enterprise = " << eC << "\t\twith a percentage of " << ePercent << std::endl;
-	outFile << "Content = " << cC << "\t\t\twith a percentage of " << cPercent << std::endl;
-	outFile << "\n\n\n";
+	outFile << "Transit/Access = " << tC << "\nw/ a percentage of " << tPercent << std::endl << std::endl;
+	outFile << "Enterprise = " << eC << "\nw/ a percentage of " << ePercent << std::endl << std::endl;
+	outFile << "Content = " << cC << "\nw/ a percentage of " << cPercent;
 	outFile.close();
 }
